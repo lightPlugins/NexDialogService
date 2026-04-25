@@ -33,33 +33,33 @@ public class DialogBuilderImpl implements DialogBuilder {
     private record InputSpec(String key, InputKind kind) {
     }
 
-    private record ButtonSpec(String text, boolean mainButton, Consumer<Map<String, Object>> callback) {
+    private record ButtonSpec(Component text, boolean mainButton, Consumer<Map<String, Object>> callback) {
     }
 
-    private String title = "Dialog";
+    private Component title = Component.text("Dialog");
     private final List<DialogBody> bodies = new ArrayList<>();
     private final List<DialogInput> inputs = new ArrayList<>();
     private final List<ButtonSpec> buttons = new ArrayList<>();
     private final List<InputSpec> inputSpecs = new ArrayList<>();
 
     @Override
-    public DialogBuilder title(String title) {
+    public DialogBuilder title(Component title) {
         this.title = title;
         return this;
     }
 
     @Override
-    public DialogBuilder body(String body) {
-        this.bodies.add(DialogBody.plainMessage(Component.text(body)));
+    public DialogBuilder body(Component body) {
+        this.bodies.add(DialogBody.plainMessage(body));
         return this;
     }
 
     @Override
-    public DialogBuilder slider(String key, float min, float max, float initial) {
+    public DialogBuilder slider(String key, Component label, float min, float max, float initial) {
         this.inputs.add(DialogInput.numberRange(
             key,
             200,
-            Component.text(key),
+            label,
             "%s",
             min,
             max,
@@ -71,11 +71,11 @@ public class DialogBuilderImpl implements DialogBuilder {
     }
 
     @Override
-    public DialogBuilder textInput(String key, String placeholder, String initialValue, int minChars, int maxChars) {
+    public DialogBuilder textInput(String key, Component placeholder, String initialValue, int minChars, int maxChars) {
         this.inputs.add(DialogInput.text(
             key,
             200,
-            Component.text(placeholder),
+            placeholder,
             true,
             initialValue,
             maxChars,
@@ -86,14 +86,14 @@ public class DialogBuilderImpl implements DialogBuilder {
     }
 
     @Override
-    public DialogBuilder toggle(String key, String label, boolean initialValue) {
-        this.inputs.add(DialogInput.bool(key, Component.text(label), initialValue, "true", "false"));
+    public DialogBuilder toggle(String key, Component label, boolean initialValue) {
+        this.inputs.add(DialogInput.bool(key, label, initialValue, "true", "false"));
         this.inputSpecs.add(new InputSpec(key, InputKind.BOOLEAN));
         return this;
     }
 
     @Override
-    public DialogBuilder button(String text, boolean isSubmitButton, Consumer<Map<String, Object>> callback) {
+    public DialogBuilder button(Component text, boolean isSubmitButton, Consumer<Map<String, Object>> callback) {
         this.buttons.add(new ButtonSpec(text, isSubmitButton, callback));
         return this;
     }
@@ -106,8 +106,8 @@ public class DialogBuilderImpl implements DialogBuilder {
             var entry = factory.empty();
 
             entry.base(DialogBase.create(
-                Component.text(title),
-                Component.text(title),
+                title,
+                title,
                 false,
                 false,
                 DialogBase.DialogAfterAction.CLOSE,
@@ -120,7 +120,7 @@ public class DialogBuilderImpl implements DialogBuilder {
 
             for (ButtonSpec spec : buttons) {
                 ActionButton actionButton = ActionButton.create(
-                    Component.text(spec.text()),
+                    spec.text(),
                     null,
                     200,
                     DialogAction.customClick((response, audience) -> spec.callback().accept(buildResponseMap(response)), ClickCallback.Options.builder().build())

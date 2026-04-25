@@ -18,31 +18,31 @@ import org.bukkit.entity.Player;
  */
 public class ConfirmDialogImpl implements ConfirmDialog {
 
-    private String title = "Confirmation required";
-    private String description = "Please confirm this action";
-    private String confirmButtonText = "Yes";
-    private String cancelButtonText = "No";
+    private Component title = Component.text("Confirmation required");
+    private Component description = Component.text("Please confirm this action");
+    private Component confirmButtonText = Component.text("Yes");
+    private Component cancelButtonText = Component.text("No");
 
     @Override
-    public ConfirmDialog title(String title) {
+    public ConfirmDialog title(Component title) {
         this.title = title;
         return this;
     }
 
     @Override
-    public ConfirmDialog body(String body) {
+    public ConfirmDialog body(Component body) {
         this.description = body;
         return this;
     }
 
     @Override
-    public ConfirmDialog confirmButton(String text) {
+    public ConfirmDialog confirmButton(Component text) {
         this.confirmButtonText = text;
         return this;
     }
 
     @Override
-    public ConfirmDialog cancelButton(String text) {
+    public ConfirmDialog cancelButton(Component text) {
         this.cancelButtonText = text;
         return this;
     }
@@ -55,24 +55,24 @@ public class ConfirmDialogImpl implements ConfirmDialog {
             var entry = factory.empty();
 
             entry.base(DialogBase.create(
-                Component.text(title),
-                Component.text(title),
+                title,
+                title,
                 false,
                 false,
                 DialogBase.DialogAfterAction.CLOSE,
-                List.of(DialogBody.plainMessage(Component.text(description))),
+                List.of(DialogBody.plainMessage(description)),
                 List.of()
             ));
 
             entry.type(DialogType.confirmation(
                 ActionButton.create(
-                    Component.text(confirmButtonText),
+                    confirmButtonText,
                     null,
                     200,
                     DialogAction.customClick((response, audience) -> future.complete(true), ClickCallback.Options.builder().build())
                 ),
                 ActionButton.create(
-                    Component.text(cancelButtonText),
+                    cancelButtonText,
                     null,
                     200,
                     DialogAction.customClick((response, audience) -> future.complete(false), ClickCallback.Options.builder().build())

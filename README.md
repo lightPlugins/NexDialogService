@@ -1,11 +1,11 @@
 # NexDialogService
 
-> A lightweight dialog service for Paper plugins, built on top of Paper's experimental Dialog API.
+> A lightweight, Component-first dialog service for Paper plugins, built on top of Paper's experimental Dialog API.
 
 ## Highlights
 
 - **Paper Dialog API support** starting with **Paper 1.21.6+**
-- **Fluent builders** for fast and readable dialog creation
+- **Component-first fluent builders** with String convenience overloads
 - **Dependency injection** ready via `NexServiceRegistry`
 - **Specialized dialog builders** for common use cases
 - **Async callback handling** with `CompletableFuture`
@@ -29,6 +29,8 @@ This service targets:
 - `SliderRequestDialog` - numeric input with a slider
 - `TextRequestDialog` - text input dialog
 - `CheckboxRequestDialog` - checkbox-based input dialog
+
+All public dialog methods accept `net.kyori.adventure.text.Component` values first. For convenience, each of them also provides `String` overloads that convert to plain text Components.
 
 ### Service layer
 
@@ -74,10 +76,10 @@ DialogBuilderService builderService = serviceAccessor.getService(DialogBuilderSe
 
 ```java
 confirmService.create()
-    .title("Accept invitation?")
-    .body("Would you like to accept this invitation?")
-    .confirmButton("Accept")
-    .cancelButton("Decline")
+    .title(Component.text("Accept invitation?"))
+    .body(Component.text("Would you like to accept this invitation?"))
+    .confirmButton(Component.text("Accept"))
+    .cancelButton(Component.text("Decline"))
     .show(player)
     .thenAccept(result -> {
         if (Boolean.TRUE.equals(result)) {
@@ -90,12 +92,12 @@ confirmService.create()
 
 ```java
 textService.create()
-    .title("Change player name")
-    .body("Enter your new name")
-    .placeholder("Name...")
+    .title(Component.text("Change player name"))
+    .body(Component.text("Enter your new name"))
+    .placeholder(Component.text("Name..."))
     .minCharacters(3)
     .maxCharacters(16)
-    .submitButton("Change")
+    .submitButton(Component.text("Change"))
     .show(player)
     .thenAccept(name -> {
         if (name != null) {
@@ -108,13 +110,14 @@ textService.create()
 
 ```java
 sliderService.create()
-    .title("Send money")
-    .body("How much do you want to send?")
+    .title(Component.text("Send money"))
+    .body(Component.text("How much do you want to send?"))
+    .label(Component.text("Amount"))
     .minValue(1.0)
     .maxValue(1000.0)
     .initialValue(100.0)
     .step(10.0)
-    .submitButton("Send")
+    .submitButton(Component.text("Send"))
     .show(player)
     .thenAccept(amount -> {
         if (amount != null) {
@@ -127,11 +130,11 @@ sliderService.create()
 
 ```java
 checkboxService.create()
-    .title("Accept terms")
-    .body("Please accept the terms and conditions")
-    .checkboxLabel("I accept")
+    .title(Component.text("Accept terms"))
+    .body(Component.text("Please accept the terms and conditions"))
+    .checkboxLabel(Component.text("I accept"))
     .checked(false)
-    .submitButton("Accept")
+    .submitButton(Component.text("Accept"))
     .show(player)
     .thenAccept(accepted -> {
         if (Boolean.TRUE.equals(accepted)) {
@@ -144,15 +147,15 @@ checkboxService.create()
 
 ```java
 builderService.create()
-    .title("Settings")
-    .body("Configure your settings")
-    .toggle("pvp", "Allow PvP", false)
-    .slider("damage", 1.0f, 10.0f, 5.0f)
-    .textInput("title", "Title", "", 1, 32)
-    .button("Save", true, result -> {
+    .title(Component.text("Settings"))
+    .body(Component.text("Configure your settings"))
+    .toggle("pvp", Component.text("Allow PvP"), false)
+    .slider("damage", Component.text("Damage"), 1.0f, 10.0f, 5.0f)
+    .textInput("title", Component.text("Title"), "", 1, 32)
+    .button(Component.text("Save"), true, result -> {
         player.sendMessage("Saved!");
     })
-    .button("Cancel", false, result -> {
+    .button(Component.text("Cancel"), false, result -> {
         player.sendMessage("Discarded");
     })
     .show(player);

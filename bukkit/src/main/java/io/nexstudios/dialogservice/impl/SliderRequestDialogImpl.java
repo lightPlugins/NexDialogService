@@ -19,29 +19,36 @@ import org.bukkit.entity.Player;
  */
 public class SliderRequestDialogImpl implements SliderRequestDialog {
 
-    private String title = "Input required";
-    private String description = "Please select a value";
-    private String submitButtonText = "Submit";
+    private Component title = Component.text("Input required");
+    private Component description = Component.text("Please select a value");
+    private Component submitButtonText = Component.text("Submit");
+    private Component sliderLabel = Component.text("Value");
     private double minValue = 0.0;
     private double maxValue = 100.0;
     private double initialValue = 50.0;
     private double step = 1.0;
 
     @Override
-    public SliderRequestDialog title(String title) {
+    public SliderRequestDialog title(Component title) {
         this.title = title;
         return this;
     }
 
     @Override
-    public SliderRequestDialog body(String body) {
+    public SliderRequestDialog body(Component body) {
         this.description = body;
         return this;
     }
 
     @Override
-    public SliderRequestDialog submitButton(String text) {
+    public SliderRequestDialog submitButton(Component text) {
         this.submitButtonText = text;
+        return this;
+    }
+
+    @Override
+    public SliderRequestDialog label(Component label) {
+        this.sliderLabel = label;
         return this;
     }
 
@@ -76,17 +83,17 @@ public class SliderRequestDialogImpl implements SliderRequestDialog {
         Dialog dialog = Dialog.create(factory -> {
             var entry = factory.empty();
             entry.base(DialogBase.create(
-                Component.text(title),
-                Component.text(title),
+                title,
+                title,
                 false,
                 false,
                 DialogBase.DialogAfterAction.CLOSE,
-                List.of(DialogBody.plainMessage(Component.text(description))),
+                List.of(DialogBody.plainMessage(description)),
                 List.of(
                     DialogInput.numberRange(
                         "value",
                         200,
-                        Component.text("Value"),
+                        sliderLabel,
                         "%s",
                         (float) minValue,
                         (float) maxValue,
@@ -99,7 +106,7 @@ public class SliderRequestDialogImpl implements SliderRequestDialog {
             entry.type(DialogType.multiAction(
                 List.of(
                     ActionButton.create(
-                        Component.text(submitButtonText),
+                        submitButtonText,
                         null,
                         200,
                         DialogAction.customClick((response, audience) -> {

@@ -19,34 +19,34 @@ import org.bukkit.entity.Player;
  */
 public class TextRequestDialogImpl implements TextRequestDialog {
 
-    private String title = "Text input required";
-    private String description = "Please enter text";
-    private String submitButtonText = "Submit";
-    private String placeholder = "";
+    private Component title = Component.text("Text input required");
+    private Component description = Component.text("Please enter text");
+    private Component submitButtonText = Component.text("Submit");
+    private Component placeholder = Component.text("Text");
     private String initialValue = "";
     private int maxCharacters = 256;
     private int minCharacters = 1;
 
     @Override
-    public TextRequestDialog title(String title) {
+    public TextRequestDialog title(Component title) {
         this.title = title;
         return this;
     }
 
     @Override
-    public TextRequestDialog body(String body) {
+    public TextRequestDialog body(Component body) {
         this.description = body;
         return this;
     }
 
     @Override
-    public TextRequestDialog submitButton(String text) {
+    public TextRequestDialog submitButton(Component text) {
         this.submitButtonText = text;
         return this;
     }
 
     @Override
-    public TextRequestDialog placeholder(String placeholder) {
+    public TextRequestDialog placeholder(Component placeholder) {
         this.placeholder = placeholder;
         return this;
     }
@@ -76,17 +76,17 @@ public class TextRequestDialogImpl implements TextRequestDialog {
         Dialog dialog = Dialog.create(factory -> {
             var entry = factory.empty();
             entry.base(DialogBase.create(
-                Component.text(title),
-                Component.text(title),
+                title,
+                title,
                 false,
                 false,
                 DialogBase.DialogAfterAction.CLOSE,
-                List.of(DialogBody.plainMessage(Component.text(description))),
+                List.of(DialogBody.plainMessage(description)),
                 List.of(
                     DialogInput.text(
                         "text",
                         200,
-                        Component.text(placeholder.isBlank() ? "Text" : placeholder),
+                        placeholder,
                         true,
                         initialValue,
                         maxCharacters,
@@ -98,7 +98,7 @@ public class TextRequestDialogImpl implements TextRequestDialog {
             entry.type(DialogType.multiAction(
                 List.of(
                     ActionButton.create(
-                        Component.text(submitButtonText),
+                        submitButtonText,
                         null,
                         200,
                         DialogAction.customClick((response, audience) -> {

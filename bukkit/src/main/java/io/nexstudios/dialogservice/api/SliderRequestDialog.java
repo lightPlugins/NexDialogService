@@ -1,5 +1,7 @@
 package io.nexstudios.dialogservice.api;
 
+import net.kyori.adventure.text.Component;
+
 /**
  * A request dialog with a slider for numeric input.
  * 
@@ -8,20 +10,54 @@ package io.nexstudios.dialogservice.api;
 public interface SliderRequestDialog extends RequestDialog<Double> {
 
     @Override
-    SliderRequestDialog title(String title);
+    SliderRequestDialog title(Component title);
+
+    @Override
+    default SliderRequestDialog title(String title) {
+        return title(Component.text(title));
+    }
 
     /**
      * Sets the body text of the dialog.
      */
-    SliderRequestDialog body(String body);
+    SliderRequestDialog body(Component body);
+
+    /**
+     * Convenience overload for plain string bodies.
+     */
+    default SliderRequestDialog body(String body) {
+        return body(Component.text(body));
+    }
 
     @Override
-    default SliderRequestDialog description(String description) {
+    default SliderRequestDialog description(Component description) {
         return body(description);
     }
 
     @Override
-    SliderRequestDialog submitButton(String text);
+    default SliderRequestDialog description(String description) {
+        return description(Component.text(description));
+    }
+
+    @Override
+    SliderRequestDialog submitButton(Component text);
+
+    @Override
+    default SliderRequestDialog submitButton(String text) {
+        return submitButton(Component.text(text));
+    }
+
+    /**
+     * Sets the label shown above the slider input.
+     */
+    SliderRequestDialog label(Component label);
+
+    /**
+     * Convenience overload for plain string labels.
+     */
+    default SliderRequestDialog label(String label) {
+        return label(Component.text(label));
+    }
 
     /**
      * Sets the minimum value of the slider.

@@ -19,32 +19,32 @@ import org.bukkit.entity.Player;
  */
 public class CheckboxRequestDialogImpl implements CheckboxRequestDialog {
 
-    private String title = "Option selection required";
-    private String description = "Please select an option";
-    private String submitButtonText = "Submit";
-    private String checkboxLabel = "Accept";
+    private Component title = Component.text("Option selection required");
+    private Component description = Component.text("Please select an option");
+    private Component submitButtonText = Component.text("Submit");
+    private Component checkboxLabel = Component.text("Accept");
     private boolean checked = false;
 
     @Override
-    public CheckboxRequestDialog title(String title) {
+    public CheckboxRequestDialog title(Component title) {
         this.title = title;
         return this;
     }
 
     @Override
-    public CheckboxRequestDialog body(String body) {
+    public CheckboxRequestDialog body(Component body) {
         this.description = body;
         return this;
     }
 
     @Override
-    public CheckboxRequestDialog submitButton(String text) {
+    public CheckboxRequestDialog submitButton(Component text) {
         this.submitButtonText = text;
         return this;
     }
 
     @Override
-    public CheckboxRequestDialog checkboxLabel(String label) {
+    public CheckboxRequestDialog checkboxLabel(Component label) {
         this.checkboxLabel = label;
         return this;
     }
@@ -62,21 +62,21 @@ public class CheckboxRequestDialogImpl implements CheckboxRequestDialog {
         Dialog dialog = Dialog.create(factory -> {
             var entry = factory.empty();
             entry.base(DialogBase.create(
-                Component.text(title),
-                Component.text(title),
+                title,
+                title,
                 false,
                 false,
                 DialogBase.DialogAfterAction.CLOSE,
-                List.of(DialogBody.plainMessage(Component.text(description))),
+                List.of(DialogBody.plainMessage(description)),
                 List.of(
-                    DialogInput.bool("checkbox", Component.text(checkboxLabel), checked, "true", "false")
+                    DialogInput.bool("checkbox", checkboxLabel, checked, "true", "false")
                 )
             ));
 
             entry.type(DialogType.multiAction(
                 List.of(
                     ActionButton.create(
-                        Component.text(submitButtonText),
+                        submitButtonText,
                         null,
                         200,
                         DialogAction.customClick((response, audience) -> {
